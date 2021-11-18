@@ -11,7 +11,7 @@ Add this dependency in your pom.xml
 
 ```xml
 <dependency>
-  <groupId>com.github.andersoncrocha</groupId>
+  <groupId>op.github.andersoncrocha</groupId>
   <artifactId>jpql-query-builder</artifactId>
   <version>1.0-SNAPSHOT</version>
 </dependency>

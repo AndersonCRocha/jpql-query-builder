@@ -1,4 +1,4 @@
-package com.github.andersoncrocha.jpqlquerybuilder.operations.types;
+package io.github.andersoncrocha.jpqlquerybuilder.operations.types;
 
 public enum QueryOperator {
 

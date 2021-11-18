@@ -1,6 +1,6 @@
-package com.github.andersoncrocha.jpqlquerybuilder.utils;
+package io.github.andersoncrocha.jpqlquerybuilder.utils;
 
-import com.github.andersoncrocha.jpqlquerybuilder.operations.QueryOperation;
+import io.github.andersoncrocha.jpqlquerybuilder.operations.QueryOperation;
 
 import java.util.List;
 import java.util.regex.Matcher;

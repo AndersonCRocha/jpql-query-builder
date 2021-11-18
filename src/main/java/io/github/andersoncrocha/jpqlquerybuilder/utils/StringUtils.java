@@ -1,4 +1,4 @@
-package com.github.andersoncrocha.jpqlquerybuilder.utils;
+package io.github.andersoncrocha.jpqlquerybuilder.utils;
 
 import java.util.Objects;
 

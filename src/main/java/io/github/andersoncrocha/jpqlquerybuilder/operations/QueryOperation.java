@@ -1,4 +1,4 @@
-package com.github.andersoncrocha.jpqlquerybuilder.operations;
+package io.github.andersoncrocha.jpqlquerybuilder.operations;
 
 public interface QueryOperation {
 
