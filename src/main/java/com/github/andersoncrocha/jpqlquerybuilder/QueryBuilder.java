@@ -1,16 +1,16 @@
-package com.github.andersoncrocha;
+package com.github.andersoncrocha.jpqlquerybuilder;
 
-import com.github.andersoncrocha.operations.From;
-import com.github.andersoncrocha.operations.GroupBy;
-import com.github.andersoncrocha.operations.JoinGroup;
-import com.github.andersoncrocha.operations.JoinGroup.Join;
-import com.github.andersoncrocha.operations.OrderBy;
-import com.github.andersoncrocha.operations.Select;
-import com.github.andersoncrocha.operations.WhereGroup;
-import com.github.andersoncrocha.operations.WhereGroup.Where;
-import com.github.andersoncrocha.operations.types.JoinType;
-import com.github.andersoncrocha.operations.types.QueryOperator;
-import com.github.andersoncrocha.utils.StringUtils;
+import com.github.andersoncrocha.jpqlquerybuilder.operations.From;
+import com.github.andersoncrocha.jpqlquerybuilder.operations.GroupBy;
+import com.github.andersoncrocha.jpqlquerybuilder.operations.JoinGroup;
+import com.github.andersoncrocha.jpqlquerybuilder.operations.JoinGroup.Join;
+import com.github.andersoncrocha.jpqlquerybuilder.operations.OrderBy;
+import com.github.andersoncrocha.jpqlquerybuilder.operations.Select;
+import com.github.andersoncrocha.jpqlquerybuilder.operations.WhereGroup;
+import com.github.andersoncrocha.jpqlquerybuilder.operations.WhereGroup.Where;
+import com.github.andersoncrocha.jpqlquerybuilder.operations.types.JoinType;
+import com.github.andersoncrocha.jpqlquerybuilder.operations.types.QueryOperator;
+import com.github.andersoncrocha.jpqlquerybuilder.utils.StringUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;

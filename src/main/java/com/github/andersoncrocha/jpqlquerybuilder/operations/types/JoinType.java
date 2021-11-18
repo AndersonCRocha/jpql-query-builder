@@ -1,4 +1,4 @@
-package com.github.andersoncrocha.operations.types;
+package com.github.andersoncrocha.jpqlquerybuilder.operations.types;
 
 public enum JoinType {
 

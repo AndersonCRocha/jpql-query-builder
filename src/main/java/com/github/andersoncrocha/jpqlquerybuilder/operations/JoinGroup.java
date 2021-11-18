@@ -1,7 +1,7 @@
-package com.github.andersoncrocha.operations;
+package com.github.andersoncrocha.jpqlquerybuilder.operations;
 
-import com.github.andersoncrocha.operations.types.JoinType;
-import com.github.andersoncrocha.utils.QueryUtils;
+import com.github.andersoncrocha.jpqlquerybuilder.operations.types.JoinType;
+import com.github.andersoncrocha.jpqlquerybuilder.utils.QueryUtils;
 
 import java.util.ArrayList;
 import java.util.List;

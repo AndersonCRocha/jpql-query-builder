@@ -1,7 +1,6 @@
-package com.github.andersoncrocha.utils;
+package com.github.andersoncrocha.jpqlquerybuilder.utils;
 
-import com.github.andersoncrocha.operations.QueryOperation;
-import com.github.andersoncrocha.operations.WhereGroup;
+import com.github.andersoncrocha.jpqlquerybuilder.operations.QueryOperation;
 
 import java.util.List;
 import java.util.regex.Matcher;
