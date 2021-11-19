@@ -32,7 +32,7 @@ public List<Person> findOrdersWithItemsByClientAndSellerIfNotNull(Client client,
     .from(Person.class, "order")
     .joinFetch("order.items")
     .where("order.client = :client", client)
-    .whereIf("order.seller", seller, Objects.nonNull(seller))
+    .whereIf("order.seller = :seller", seller, Objects.nonNull(seller))
     .getResultList(Person.class);
 }
 ```
