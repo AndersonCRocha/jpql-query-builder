@@ -8,11 +8,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.IntStream;
 
 public class WhereGroup implements QueryOperation {
 
-  List<QueryOperation> wheres = new ArrayList<>();
-  Map<String, Object> parameters = new HashMap<>();
+  final List<QueryOperation> wheres = new ArrayList<>();
+  final Map<String, Object> parameters = new HashMap<>();
 
   public void where(Where where) {
     if (wheres.isEmpty()) {
@@ -21,10 +22,11 @@ public class WhereGroup implements QueryOperation {
 
     this.wheres.add(where);
 
-    if (Objects.nonNull(where.parameter)) {
-      String parameterName = QueryUtils.extractParameterName(where.clause);
-      Objects.requireNonNull(parameterName, "A parameter was entered but no named parameter was found in the clause");
-      this.parameters.put(parameterName, where.parameter);
+    if (Objects.nonNull(where.parameters) && !where.parameters.isEmpty()) {
+      List<String> parameterNames = QueryUtils.extractParameterName(where.clause);
+      Objects.requireNonNull(parameterNames, "A parameter was entered but no named parameter was found in the clause");
+      IntStream.range(0, where.parameters.size())
+        .forEachOrdered(index -> this.parameters.put(parameterNames.get(index), where.parameters.get(index)));
     }
   }
 
@@ -42,6 +44,10 @@ public class WhereGroup implements QueryOperation {
     this.parameters.put(name, value);
   }
 
+  public void addParameters(Map<String, Object> parameters) {
+    this.parameters.putAll(parameters);
+  }
+
   public Map<String, Object> getParameters() {
     return parameters;
   }
@@ -55,17 +61,17 @@ public class WhereGroup implements QueryOperation {
 
     private final String clause;
     private QueryOperator type;
-    private Object parameter;
+    private List<Object> parameters;
 
     public Where(String clause, QueryOperator type) {
       this.clause = clause;
       this.type = type;
     }
 
-    public Where(String clause, QueryOperator type, Object parameter) {
+    public Where(String clause, QueryOperator type, List<Object> parameters) {
       this.clause = clause;
       this.type = type;
-      this.parameter = parameter;
+      this.parameters = parameters;
     }
 
     @Override

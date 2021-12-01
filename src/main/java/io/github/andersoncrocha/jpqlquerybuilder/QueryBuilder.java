@@ -17,7 +17,9 @@ import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.persistence.Tuple;
 import javax.persistence.TypedQuery;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
@@ -67,8 +69,10 @@ public class QueryBuilder {
     return this.from(queryBuilderSubQuery, alias);
   }
 
-  public QueryBuilder from(QueryBuilder queryBuilderSubQuery, String alias) {
-    this.from = new From("(" + queryBuilderSubQuery.getQueryString() + ")", alias);
+  public QueryBuilder from(QueryBuilder subQuery, String alias) {
+    Map<String, Object> subQueryParameters = subQuery.whereGroup.getParameters();
+    this.whereGroup.addParameters(subQueryParameters);
+    this.from = new From("(" + subQuery.getQueryString() + ")", alias);
     this.lastOperator = QueryOperator.FROM;
     return this;
   }
@@ -77,6 +81,10 @@ public class QueryBuilder {
     this.from = new From(table, alias);
     this.lastOperator = QueryOperator.FROM;
     return this;
+  }
+
+  public QueryBuilder from(String table) {
+    return this.from(table, null);
   }
 
   public QueryBuilder from(Class<?> fromClass, String alias) {
@@ -117,14 +125,14 @@ public class QueryBuilder {
     return this.join(target, JoinType.RIGHT_FETCH);
   }
 
-  private QueryBuilder where(String clause, QueryOperator type, Object parameter) {
-    Where where = new Where(clause, type, parameter);
+  private QueryBuilder where(String clause, QueryOperator type, Object... parameters) {
+    Where where = new Where(clause, type, Arrays.asList(parameters));
     this.whereGroup.where(where);
     this.lastOperator = QueryOperator.AND;
     return this;
   }
 
-  public QueryBuilder where(String clause, Object parameter) {
+  public QueryBuilder where(String clause, Object... parameters) {
     QueryOperator type = QueryOperator.NONE;
 
     if (lastOperator == QueryOperator.OR) {
@@ -133,7 +141,7 @@ public class QueryBuilder {
       type = QueryOperator.AND;
     }
 
-    return this.where(clause, type, parameter);
+    return this.where(clause, type, parameters);
   }
 
   public QueryBuilder whereIf(String clause, Object parameter, boolean shouldAddWhere) {
@@ -141,7 +149,7 @@ public class QueryBuilder {
   }
 
   public QueryBuilder where(String clause) {
-    return this.where(clause, null);
+    return this.where(clause, (Object) null);
   }
 
   public QueryBuilder whereIf(String clause, boolean shouldAddWhere) {
@@ -202,7 +210,8 @@ public class QueryBuilder {
 
   private void validateQuery() {
     Objects.requireNonNull(from, "It is not allowed to create a query without 'from' clause");
-    this.select = Objects.nonNull(select) ? select : new Select(from.getAlias());
+    String selectIfNonSpecified = nativeQuery ? "*" : from.getAlias();
+    this.select = Objects.nonNull(select) ? select : new Select(selectIfNonSpecified);
   }
 
   public String getQueryString() {

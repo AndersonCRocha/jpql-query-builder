@@ -1,5 +1,7 @@
 package io.github.andersoncrocha.jpqlquerybuilder.operations;
 
+import java.util.Objects;
+
 public class From implements QueryOperation {
 
   private final String from;
@@ -16,7 +18,11 @@ public class From implements QueryOperation {
 
   @Override
   public String getOperation() {
-    return String.format("FROM %s AS %s ", from, alias);
+    StringBuilder fromClause = new StringBuilder("FROM ").append(from);
+    if (Objects.nonNull(alias)) {
+      fromClause.append(" AS ").append(alias);
+    }
+    return fromClause.toString();
   }
 
 }
