@@ -29,10 +29,10 @@ Add this dependency in your pom.xml
 ```java
 public List<Person> findOrdersWithItemsByClientAndSellerIfNotNull(Client client, Seller seller) {
   return new QueryBuilder(entityManager)
-    .from(Person.class, "order")
+    .from(Order.class, "order")
     .joinFetch("order.items")
     .where("order.client = :client", client)
     .whereIf("order.seller = :seller", seller, Objects.nonNull(seller))
-    .getResultList(Person.class);
+    .getResultList(Order.class);
 }
 ```
