@@ -6,7 +6,7 @@
 
   <groupId>io.github.andersoncrocha</groupId>
   <artifactId>jpql-query-builder</artifactId>
-  <version>1.1.0</version>
+  <version>1.2.0</version>
 
   <name>JPQL Query Builder</name>
   <description>This is a tool that helps you create queries with Hibernate using JPQL or native SQL</description>
@@ -41,9 +41,9 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-core</artifactId>
-      <version>5.6.1.Final</version>
+      <groupId>javax.persistence</groupId>
+      <artifactId>javax.persistence-api</artifactId>
+      <version>2.2</version>
     </dependency>
   </dependencies>
 

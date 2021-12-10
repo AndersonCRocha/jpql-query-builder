@@ -12,6 +12,10 @@ public class QueryUtils {
 
   private static final Pattern PARAMETER_NAME_PATTERN = Pattern.compile(":(?<parameterName>[A-Za-z0-9]*)");
 
+  private QueryUtils() {
+    throw new UnsupportedOperationException("Utility class.");
+  }
+
   public static List<String> extractParameterName(String clause) {
     Matcher matcher = PARAMETER_NAME_PATTERN.matcher(clause);
     List<String> parameters = new ArrayList<>();

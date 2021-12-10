@@ -1,5 +1,6 @@
 package io.github.andersoncrocha.jpqlquerybuilder;
 
+import io.github.andersoncrocha.jpqlquerybuilder.mapper.AliasToPojoResultMapper;
 import io.github.andersoncrocha.jpqlquerybuilder.operations.From;
 import io.github.andersoncrocha.jpqlquerybuilder.operations.GroupBy;
 import io.github.andersoncrocha.jpqlquerybuilder.operations.JoinGroup;
@@ -290,6 +291,10 @@ public class QueryBuilder {
       .stream()
       .map(mapper)
       .collect(Collectors.toList());
+  }
+
+  public <T> List<T> getResultListToPojo(Class<T> resultType) {
+    return this.getResultList(AliasToPojoResultMapper.from(resultType));
   }
 
   @Override
