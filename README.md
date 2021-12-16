@@ -27,7 +27,7 @@ Add this dependency in your pom.xml
 #### Examples
 
 ```java
-public List<Person> findOrdersWithItemsByClientAndSellerIfNotNull(Client client, Seller seller) {
+public List<Order> findOrdersWithItemsByClientAndSellerIfNotNull(Client client, Seller seller) {
   return new QueryBuilder(entityManager)
     .from(Order.class, "order")
     .joinFetch("order.items")
