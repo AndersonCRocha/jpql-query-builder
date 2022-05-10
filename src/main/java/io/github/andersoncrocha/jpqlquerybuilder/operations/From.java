@@ -22,7 +22,7 @@ public class From implements QueryOperation {
     if (Objects.nonNull(alias)) {
       fromClause.append(" AS ").append(alias);
     }
-    return fromClause.toString();
+    return fromClause.append(" ").toString();
   }
 
 }
