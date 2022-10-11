@@ -11,6 +11,7 @@ import io.github.andersoncrocha.jpqlquerybuilder.operations.WhereGroup;
 import io.github.andersoncrocha.jpqlquerybuilder.operations.WhereGroup.Where;
 import io.github.andersoncrocha.jpqlquerybuilder.operations.types.JoinType;
 import io.github.andersoncrocha.jpqlquerybuilder.operations.types.QueryOperator;
+import io.github.andersoncrocha.jpqlquerybuilder.operations.types.SortDirection;
 import io.github.andersoncrocha.jpqlquerybuilder.utils.StringUtils;
 
 import javax.persistence.EntityManager;
@@ -24,6 +25,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 public class QueryBuilder {
@@ -42,6 +44,10 @@ public class QueryBuilder {
 
   private QueryOperator lastOperator;
   private boolean nativeQuery;
+
+  public QueryBuilder() {
+    this(null);
+  }
 
   public QueryBuilder(EntityManager entityManager) {
     this.entityManager = entityManager;
@@ -65,7 +71,7 @@ public class QueryBuilder {
     return this.from(fromClass, alias);
   }
 
-  public QueryBuilder from(Function<QueryBuilder, QueryBuilder> subQueryFunction, String alias) {
+  public QueryBuilder from(UnaryOperator<QueryBuilder> subQueryFunction, String alias) {
     QueryBuilder queryBuilderSubQuery = subQueryFunction.apply(new QueryBuilder(entityManager));
     return this.from(queryBuilderSubQuery, alias);
   }
@@ -98,28 +104,90 @@ public class QueryBuilder {
     return this;
   }
 
+  private QueryBuilder join(String target, String alias, String condition, JoinType type) {
+    String joinTargetWithAlias = StringUtils.isNotBlank(alias)
+        ? target.concat(" ").concat(alias)
+        : target;
+    String finalTarget = StringUtils.isNotBlank(condition)
+        ? joinTargetWithAlias.concat(" ON ").concat(condition)
+        : joinTargetWithAlias;
+    return this.join(finalTarget, type);
+  }
+
+  private QueryBuilder join(Class<?> target, String alias, String condition, JoinType type) {
+    return this.join(target.getSimpleName(), alias, condition, type);
+  }
+
+  public QueryBuilder join(Class<?> joinClass, String alias, String condition) {
+    return this.join(joinClass, alias, condition, JoinType.INNER);
+  }
+
+  public QueryBuilder join(Class<?> joinClass, String alias) {
+    return this.join(joinClass, alias, null);
+  }
+
   public QueryBuilder join(String target, String condition) {
-    return this.join(target.concat(" ON ").concat(condition), JoinType.INNER);
+    return this.join(target, null, condition, JoinType.INNER);
   }
 
   public QueryBuilder join(String target) {
     return this.join(target, JoinType.INNER);
   }
 
+  public QueryBuilder joinFetch(Class<?> joinClass, String alias, String condition) {
+    return this.join(joinClass, alias, condition, JoinType.INNER_FETCH);
+  }
+
+  public QueryBuilder joinFetch(Class<?> joinClass, String alias) {
+    return this.joinFetch(joinClass, alias, null);
+  }
+
   public QueryBuilder joinFetch(String target) {
     return this.join(target, JoinType.INNER_FETCH);
+  }
+
+  public QueryBuilder leftJoin(Class<?> joinClass, String alias, String condition) {
+    return this.join(joinClass, alias, condition, JoinType.LEFT);
+  }
+
+  public QueryBuilder leftJoin(Class<?> joinClass, String alias) {
+    return this.leftJoin(joinClass, alias, null);
   }
 
   public QueryBuilder leftJoin(String target) {
     return this.join(target, JoinType.LEFT);
   }
 
+  public QueryBuilder leftJoinFetch(Class<?> joinClass, String alias, String condition) {
+    return this.join(joinClass, alias, condition, JoinType.LEFT_FETCH);
+  }
+
+  public QueryBuilder leftJoinFetch(Class<?> joinClass, String alias) {
+    return this.leftJoinFetch(joinClass, alias, null);
+  }
+
   public QueryBuilder leftJoinFetch(String target) {
     return this.join(target, JoinType.LEFT_FETCH);
   }
 
+  public QueryBuilder rightJoin(Class<?> joinClass, String alias, String condition) {
+    return this.join(joinClass, alias, condition, JoinType.RIGHT);
+  }
+
+  public QueryBuilder rightJoin(Class<?> joinClass, String alias) {
+    return this.rightJoin(joinClass, alias, null);
+  }
+
   public QueryBuilder rightJoin(String target) {
     return this.join(target, JoinType.RIGHT);
+  }
+
+  public QueryBuilder rightJoinFetch(Class<?> joinClass, String alias, String condition) {
+    return this.join(joinClass, alias, condition, JoinType.RIGHT_FETCH);
+  }
+
+  public QueryBuilder rightJoinFetch(Class<?> joinClass, String alias) {
+    return this.rightJoinFetch(joinClass, alias, null);
   }
 
   public QueryBuilder rightJoinFetch(String target) {
@@ -149,12 +217,20 @@ public class QueryBuilder {
     return shouldAddWhere ? this.where(clause, parameter) : this;
   }
 
+  public QueryBuilder whereNotIf(String clause, Object parameter, boolean shouldAddWhere) {
+    return this.whereIf(clause, parameter, !shouldAddWhere);
+  }
+
   public QueryBuilder where(String clause) {
     return this.where(clause, (Object) null);
   }
 
   public QueryBuilder whereIf(String clause, boolean shouldAddWhere) {
     return shouldAddWhere ? this.where(clause) : this;
+  }
+
+  public QueryBuilder whereNotIf(String clause, boolean shouldAddWhere) {
+    return this.whereIf(clause, !shouldAddWhere);
   }
 
   public QueryBuilder or() {
@@ -184,17 +260,21 @@ public class QueryBuilder {
     return this;
   }
 
-  public QueryBuilder addOrderBy(String orderBy) {
-    this.orderBy.addOrderBy(orderBy);
+  public QueryBuilder orderBy(String orderBy, SortDirection sortDirection) {
+    if (Objects.nonNull(this.orderBy)) {
+      this.orderBy.addOrderBy(orderBy, sortDirection);
+    } else {
+      this.orderBy = new OrderBy(orderBy, sortDirection);
+    }
     return this;
   }
 
-  public QueryBuilder firstResult(Integer firstResult) {
+  public QueryBuilder firstResult(int firstResult) {
     this.firstResult = firstResult;
     return this;
   }
 
-  public QueryBuilder maxResults(Integer maxResults) {
+  public QueryBuilder maxResults(int maxResults) {
     this.maxResults = maxResults;
     return this;
   }
@@ -236,6 +316,8 @@ public class QueryBuilder {
   }
 
   public <T> TypedQuery<T> getQuery(Class<T> resultClass) {
+    Objects.requireNonNull(entityManager, "It is not allowed to execute a query without inject a entity manager");
+
     String queryString = this.getQueryString();
     TypedQuery<T> query = this.entityManager.createQuery(queryString, resultClass)
       .setFirstResult(firstResult)
@@ -245,6 +327,8 @@ public class QueryBuilder {
   }
 
   public Query getNativeQuery() {
+    Objects.requireNonNull(entityManager, "It is not allowed to execute a query without inject a entity manager");
+
     String queryString = this.getQueryString();
     Query query = this.entityManager.createNativeQuery(queryString, Tuple.class)
       .setFirstResult(firstResult)
