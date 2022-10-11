@@ -1,6 +1,6 @@
-# Query Builder JPQL for Hibernate Queries (Under development)
+# Query Builder JPQL for JPA Queries (Under development)
 
-This is a tool that helps you create queries with Hibernate using JPQL or native SQL
+This is a tool that helps you create queries with JPA using JPQL or native SQL
 
 
 ## How to install
