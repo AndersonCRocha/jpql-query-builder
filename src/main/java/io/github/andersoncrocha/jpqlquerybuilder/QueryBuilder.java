@@ -30,6 +30,8 @@ import java.util.stream.Collectors;
 
 public class QueryBuilder {
 
+  private static final Object EMPTY = new Object();
+
   private final EntityManager entityManager;
 
   private Select select;
@@ -45,14 +47,22 @@ public class QueryBuilder {
   private QueryOperator lastOperator;
   private boolean nativeQuery;
 
-  public QueryBuilder() {
+  private QueryBuilder() {
     this(null);
   }
 
-  public QueryBuilder(EntityManager entityManager) {
+  private QueryBuilder(EntityManager entityManager) {
     this.entityManager = entityManager;
     this.joinGroup = new JoinGroup();
     this.whereGroup = new WhereGroup();
+  }
+
+  public static QueryBuilder newQuery() {
+    return new QueryBuilder();
+  }
+
+  public static QueryBuilder newQuery(EntityManager entityManager) {
+    return new QueryBuilder(entityManager);
   }
 
   public QueryBuilder select(String select) {
@@ -195,7 +205,10 @@ public class QueryBuilder {
   }
 
   private QueryBuilder where(String clause, QueryOperator type, Object... parameters) {
-    Where where = new Where(clause, type, Arrays.asList(parameters));
+    List<Object> listOfParameters = Arrays.stream(parameters)
+            .filter(parameter -> parameter != EMPTY)
+            .collect(Collectors.toList());
+    Where where = new Where(clause, type, listOfParameters);
     this.whereGroup.where(where);
     this.lastOperator = QueryOperator.AND;
     return this;
@@ -222,7 +235,7 @@ public class QueryBuilder {
   }
 
   public QueryBuilder where(String clause) {
-    return this.where(clause, (Object) null);
+    return this.where(clause, EMPTY);
   }
 
   public QueryBuilder whereIf(String clause, boolean shouldAddWhere) {

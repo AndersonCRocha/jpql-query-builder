@@ -6,7 +6,7 @@
 
   <groupId>io.github.andersoncrocha</groupId>
   <artifactId>jpql-query-builder</artifactId>
-  <version>1.2.2</version>
+  <version>1.2.3</version>
 
   <name>JPQL Query Builder</name>
   <description>This is a tool that helps you create queries with Hibernate using JPQL or native SQL</description>

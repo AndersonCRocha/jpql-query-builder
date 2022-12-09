@@ -13,7 +13,7 @@ Add this dependency in your pom.xml
 <dependency>
   <groupId>io.github.andersoncrocha</groupId>
   <artifactId>jpql-query-builder</artifactId>
-  <version>1.2.2</version>
+  <version>1.2.3</version>
 </dependency>
 ```
 
@@ -28,7 +28,7 @@ Add this dependency in your pom.xml
 
 ```java
 public List<Order> findOrdersWithItemsByClientAndSellerIfNotNull(Client client, Seller seller) {
-  return new QueryBuilder(entityManager)
+  return QueryBuilder.newQuery(entityManager)
     .from(Order.class, "order")
     .joinFetch("order.items")
     .where("order.client = :client", client)
