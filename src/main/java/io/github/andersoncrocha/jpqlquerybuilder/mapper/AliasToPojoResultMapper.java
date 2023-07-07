@@ -5,7 +5,6 @@ import io.github.andersoncrocha.jpqlquerybuilder.utils.ReflectionUtils;
 import io.github.andersoncrocha.jpqlquerybuilder.utils.StringUtils;
 
 import javax.lang.model.type.NullType;
-import javax.persistence.Entity;
 import javax.persistence.Tuple;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;

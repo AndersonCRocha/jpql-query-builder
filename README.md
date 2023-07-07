@@ -13,7 +13,7 @@ Add this dependency in your pom.xml
 <dependency>
   <groupId>io.github.andersoncrocha</groupId>
   <artifactId>jpql-query-builder</artifactId>
-  <version>1.2.3</version>
+  <version>1.2.5</version>
 </dependency>
 ```
 

@@ -1,7 +1,6 @@
 package io.github.andersoncrocha.jpqlquerybuilder.utils;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -31,7 +30,7 @@ public class ReflectionUtils {
 
   public static String extractPropertyNameByAccessorMethod(Method method) {
     validateIfAccessorMethod(method);
-    String propertyName = method.getName().replaceAll("^set|get|is", "");
+    String propertyName = method.getName().replaceAll("^set|^get|^is", "");
     return StringUtils.uncapitalize(propertyName);
   }
 

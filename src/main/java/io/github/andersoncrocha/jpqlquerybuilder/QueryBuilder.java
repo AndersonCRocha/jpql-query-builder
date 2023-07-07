@@ -268,11 +268,6 @@ public class QueryBuilder {
     return this;
   }
 
-  public QueryBuilder orderBy(String orderBy) {
-    this.orderBy = new OrderBy(orderBy);
-    return this;
-  }
-
   public QueryBuilder orderBy(String orderBy, SortDirection sortDirection) {
     if (Objects.nonNull(this.orderBy)) {
       this.orderBy.addOrderBy(orderBy, sortDirection);
@@ -280,6 +275,10 @@ public class QueryBuilder {
       this.orderBy = new OrderBy(orderBy, sortDirection);
     }
     return this;
+  }
+
+  public QueryBuilder orderBy(String orderBy) {
+    return this.orderBy(orderBy, SortDirection.ASC);
   }
 
   public QueryBuilder firstResult(int firstResult) {
@@ -337,6 +336,18 @@ public class QueryBuilder {
       .setMaxResults(maxResults);
     this.whereGroup.getParameters().forEach(query::setParameter);
     return query;
+  }
+
+  public String getJoinsString() {
+    return this.joinGroup.getOperation();
+  }
+
+  public String getWheresString() {
+    return this.whereGroup.getOperation();
+  }
+
+  public Map<String, Object> getParameters() {
+    return this.whereGroup.getParameters();
   }
 
   public Query getNativeQuery() {
